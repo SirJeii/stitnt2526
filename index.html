@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STI College Marikina - Tagisan ng Talino 2025-2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .sti-blue { color: #005596; }
+        .bg-sti-blue { background-color: #005596; }
+        .sti-yellow { color: #fff200; }
+        .bg-sti-yellow { background-color: #fff200; }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #005596 0%, #00335c 100%);
+        }
+
+        .contest-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .contest-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .countdown-item {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Modal Animation */
+        .modal-enter {
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- DPA Modal -->
+    <div id="dpaModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden modal-enter">
+                <div class="bg-sti-blue p-6 text-white flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">
+                        <i class="fas fa-user-shield text-sti-yellow"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-black">Data Privacy Notice</h4>
+                        <p class="text-xs text-blue-100 uppercase tracking-widest font-bold">Registration Requirement</p>
+                    </div>
+                </div>
+                <div class="p-8">
+                    <div class="text-sm text-slate-600 space-y-4 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
+                        <p class="font-bold text-slate-900">In compliance with the Data Privacy Act of 2012 (R.A. 10173):</p>
+                        <p>By clicking "I Accept and Proceed", I hereby authorize STI College Marikina to collect, process, and store my personal information provided in the registration form for the purpose of organizing and managing the <strong>Tagisan ng Talino 2025-2026</strong>.</p>
+                        <p>I understand that my information will be used for:</p>
+                        <ul class="list-disc pl-5 space-y-2">
+                            <li>Validating my eligibility for the chosen competition.</li>
+                            <li>Contacting me regarding competition schedules and updates.</li>
+                            <li>Documentation and publication of event highlights.</li>
+                            <li>Internal records of STI College Marikina.</li>
+                        </ul>
+                        <p>I am aware that I have the right to access, correct, or request the deletion of my personal data in accordance with the law.</p>
+                    </div>
+                    <div class="mt-8 flex flex-col sm:flex-row gap-3">
+                        <button onclick="closeModal()" class="flex-1 px-6 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 hover:bg-slate-50 transition">Decline</button>
+                        <button id="confirmRegister" class="flex-1 px-6 py-3 rounded-xl bg-sti-blue text-white font-bold hover:bg-blue-800 shadow-lg shadow-blue-900/20 transition">I Accept and Proceed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header / Nav -->
+    <nav class="glass-nav border-b sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">STI College Marikina</h1>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Tagisan ng Talino 25-26</p>
+                </div>
+                <div class="hidden md:flex space-x-8 text-sm font-semibold">
+                    <a href="#announcements" class="text-slate-600 hover:text-blue-700 transition">Announcements</a>
+                    <a href="#academic" class="text-slate-600 hover:text-blue-700 transition">Academic</a>
+                    <a href="#culinary" class="text-slate-600 hover:text-blue-700 transition">Culinary</a>
+                    <a href="#tech" class="text-slate-600 hover:text-blue-700 transition">Tech</a>
+                </div>
+                <button onclick="scrollToSection('#academic')" class="bg-sti-blue text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-800 transition md:block hidden">
+                    Register Now
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-gradient text-white py-20 px-4 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-sti-yellow opacity-10 rounded-full -mr-20 -mt-20"></div>
+        <div class="max-w-5xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold mb-8 uppercase tracking-widest">
+                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                Official Registration Portal
+            </div>
+            <h2 class="text-5xl md:text-7xl font-black mb-6 tracking-tight uppercase">Tagisan ng Talino</h2>
+            <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto leading-relaxed">
+                Step up to the challenge. Prove your excellence in academic, hospitality, and technical competitions.
+            </p>
+            
+            <!-- Countdown Timer -->
+            <div class="max-w-3xl mx-auto mt-12 bg-black/20 p-8 rounded-3xl border border-white/10 backdrop-blur-md">
+                <p class="text-sti-yellow text-sm font-black uppercase tracking-[0.3em] mb-6">Registration Ends In</p>
+                <div class="grid grid-cols-4 gap-4" id="countdown">
+                    <div class="countdown-item p-4 rounded-2xl">
+                        <span id="days" class="block text-3xl md:text-5xl font-black">00</span>
+                        <span class="text-[10px] md:text-xs uppercase font-bold text-blue-200">Days</span>
+                    </div>
+                    <div class="countdown-item p-4 rounded-2xl">
+                        <span id="hours" class="block text-3xl md:text-5xl font-black">00</span>
+                        <span class="text-[10px] md:text-xs uppercase font-bold text-blue-200">Hours</span>
+                    </div>
+                    <div class="countdown-item p-4 rounded-2xl">
+                        <span id="minutes" class="block text-3xl md:text-5xl font-black">00</span>
+                        <span class="text-[10px] md:text-xs uppercase font-bold text-blue-200">Minutes</span>
+                    </div>
+                    <div class="countdown-item p-4 rounded-2xl">
+                        <span id="seconds" class="block text-3xl md:text-5xl font-black">00</span>
+                        <span class="text-[10px] md:text-xs uppercase font-bold text-blue-200">Seconds</span>
+                    </div>
+                </div>
+                <p class="mt-6 text-blue-200 text-xs font-medium">Deadline: February 15, 2026 at 11:59 PM</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-12">
+                <button onclick="scrollToSection('#academic')" class="bg-sti-yellow text-blue-900 px-10 py-4 rounded-xl font-black hover:bg-yellow-400 transition shadow-xl uppercase tracking-wider text-sm">
+                    Register Now
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-16">
+
+        <!-- Announcements Section -->
+        <section id="announcements" class="mb-24">
+            <div class="bg-white border rounded-3xl overflow-hidden shadow-sm flex flex-col md:flex-row">
+                <div class="bg-sti-blue text-white p-8 md:w-1/3 flex flex-col justify-center">
+                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                        <i class="fas fa-bullhorn text-sti-yellow"></i>
+                    </div>
+                    <h3 class="text-2xl font-black mb-2">Official Bulletin</h3>
+                    <p class="text-blue-100 text-sm">Stay updated with the latest news regarding TNT 2025-2026.</p>
+                </div>
+                <div class="p-8 md:w-2/3">
+                    <div class="space-y-6">
+                        <div class="flex gap-4 pb-6 border-b border-slate-100">
+                            <div class="shrink-0 text-sti-blue mt-1">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold text-sti-blue uppercase tracking-widest">New Update</span>
+                                <h4 class="font-bold text-lg mb-1">Central Hub for TNT Announcements</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">We are pleased to inform all students and participants that <strong>this website is now the official portal</strong> for STI College Marikina Tagisan ng Talino 2025-2026. All schedules, results, and major updates will be posted here exclusively.</p>
+                                <span class="text-[10px] text-slate-400 mt-2 block italic">Posted on: January 2026</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="shrink-0 text-slate-300 mt-1">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Upcoming</span>
+                                <h4 class="font-bold text-lg mb-1">Pre-Competition Orientation</h4>
+                                <p class="text-slate-600 text-sm leading-relaxed">Check back soon for the scheduled virtual orientation for all registered participants.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Academic & Speech -->
+        <section id="academic" class="mb-24">
+            <div class="mb-10">
+                <span class="text-sti-blue font-bold text-sm tracking-[0.2em] uppercase">Category 01</span>
+                <h3 class="text-3xl font-black mt-2">Academic & Speech</h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Think Quest -->
+                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
+                    <div>
+                        <div class="w-12 h-12 bg-blue-50 text-sti-blue rounded-xl flex items-center justify-center mb-6 text-2xl">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Think Quest</h4>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Fast-paced quiz bee testing knowledge in various general academic subjects.</p>
+                    </div>
+                    <button onclick="handleRegistration('https://forms.office.com/r/FCM8i9zYVZ?origin=l')" class="w-full text-center bg-sti-blue text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition">Register Now</button>
+                </div>
+
+                <!-- Stand Up and Deliver -->
+                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
+                    <div>
+                        <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                            <i class="fas fa-microphone-alt"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Stand Up and Deliver</h4>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Showcase your public speaking prowess and impromptu delivery skills.</p>
+                    </div>
+                    <button onclick="handleRegistration('https://forms.office.com/r/ZP48Et0yx5?origin=lp')" class="w-full text-center bg-sti-blue text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition">Register Now</button>
+                </div>
+
+                <!-- Essay Does It -->
+                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
+                    <div>
+                        <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                            <i class="fas fa-pen-nib"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Essay Does It</h4>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Craft compelling narratives and express complex ideas through writing.</p>
+                    </div>
+                    <button onclick="handleRegistration('https://forms.office.com/r/FCM8i9zYVZ?origin=l')" class="w-full text-center bg-sti-blue text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition">Register Now</button>
+                </div>
+
+                <!-- Travelogue -->
+                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
+                    <div>
+                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                            <i class="fas fa-globe-asia"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Travelogue</h4>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Highlight destinations and tourism spots with creative presentation skills.</p>
+                    </div>
+                    <button disabled class="w-full text-center bg-slate-100 text-slate-400 py-3 rounded-xl font-bold cursor-not-allowed italic">Coming Soon</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Culinary Arts -->
+        <section id="culinary" class="mb-24">
+            <div class="mb-10">
+                <span class="text-amber-500 font-bold text-sm tracking-[0.2em] uppercase">Category 02</span>
+                <h3 class="text-3xl font-black mt-2">Plates and Palates (Culinary)</h3>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Worth The Whisk -->
+                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
+                    <div>
+                        <div class="w-12 h-12 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Worth The Whisk</h4>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Cake decorating competition where precision and creativity meet.</p>
+                    </div>
+                    <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="w-full text-center bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">Register Now</button>
+                </div>
+
+                <!-- Chef Express -->
+                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
+                    <div>
+                        <div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                            <i class="fas fa-hat-chef"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Chef Express</h4>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Culinary competition focusing on taste, speed, and presentation.</p>
+                    </div>
+                    <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="w-full text-center bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">Register Now</button>
+                </div>
+
+                <!-- Mix and Flair -->
+                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
+                    <div>
+                        <div class="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                            <i class="fas fa-cocktail"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Mix and Flair</h4>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Bartending and flairtending skills for future hospitality stars.</p>
+                    </div>
+                    <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="w-full text-center bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">Register Now</button>
+                </div>
+
+                <!-- All in Place -->
+                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
+                    <div>
+                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+                            <i class="fas fa-concierge-bell"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">All in Place</h4>
+                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Mise-en-place and table setting competition for service excellence.</p>
+                    </div>
+                    <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="w-full text-center bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">Register Now</button>
+                </div>
+            </div>
+            
+            <div class="mt-8 bg-amber-50 border border-amber-100 p-4 rounded-xl text-amber-800 text-sm flex items-center gap-3">
+                <i class="fas fa-info-circle text-lg"></i>
+                <p>Note: All culinary contests use the unified <strong>Culinary Society Tagisan ng Talino Pre-Registration Form</strong>.</p>
+            </div>
+        </section>
+
+        <!-- Tech Section -->
+        <section id="tech">
+            <div class="mb-10">
+                <span class="text-indigo-600 font-bold text-sm tracking-[0.2em] uppercase">Category 03</span>
+                <h3 class="text-3xl font-black mt-2">Information Technology</h3>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
+                <div class="contest-card bg-slate-900 text-white p-10 rounded-3xl overflow-hidden relative group">
+                    <div class="absolute top-0 right-0 p-8 opacity-10 text-9xl group-hover:scale-110 transition duration-500">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="relative z-10 md:w-2/3">
+                        <div class="inline-block bg-indigo-600 text-[10px] font-black px-3 py-1 rounded-full mb-4 uppercase tracking-widest">Featured Tech Contest</div>
+                        <h4 class="text-3xl font-black mb-4">CodeFest 2025</h4>
+                        <p class="text-slate-400 text-lg mb-8 leading-relaxed">The premier programming competition for future software engineers. Challenge your logic, speed, and coding efficiency in real-time problem-solving scenarios.</p>
+                        <button onclick="handleRegistration('https://forms.office.com/r/Jd6bLw62NG')" class="inline-flex items-center bg-sti-yellow text-blue-900 px-8 py-3 rounded-xl font-black hover:bg-yellow-400 transition shadow-lg uppercase tracking-wider text-sm">
+                            Register for CodeFest <i class="fas fa-chevron-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-white py-16">
+        <div class="max-w-7xl mx-auto px-4 text-center md:text-left">
+            <div class="mb-12 flex justify-center">
+                <h5 class="font-black text-4xl text-white">Be More. Be STI.</h5>
+            </div>
+            <div class="border-t border-slate-900 pt-8 flex justify-center items-center text-xs text-slate-500">
+                <p>&copy; 2025-2026 STI College Marikina. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- GLOBAL STATE ---
+        let pendingRegistrationUrl = '';
+
+        // --- DPA MODAL LOGIC ---
+        const modal = document.getElementById('dpaModal');
+        const confirmBtn = document.getElementById('confirmRegister');
+
+        function handleRegistration(url) {
+            pendingRegistrationUrl = url;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            pendingRegistrationUrl = '';
+        }
+
+        confirmBtn.onclick = function() {
+            if(pendingRegistrationUrl) {
+                window.open(pendingRegistrationUrl, '_blank');
+                closeModal();
+            }
+        };
+
+        // --- SCROLL HELPERS ---
+        function scrollToSection(id) {
+            const element = document.querySelector(id);
+            if(element) {
+                const offset = 80;
+                const bodyRect = document.body.getBoundingClientRect().top;
+                const elementRect = element.getBoundingClientRect().top;
+                const elementPosition = elementRect - bodyRect;
+                const offsetPosition = elementPosition - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // --- COUNTDOWN LOGIC ---
+        const targetDate = new Date("February 15, 2026 23:59:59").getTime();
+
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById("countdown").innerHTML = "<div class='text-sti-yellow text-xl font-bold uppercase'>Registration Closed</div>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = seconds.toString().padStart(2, '0');
+        };
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // --- SMOOTH SCROLL FOR NAV ---
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                scrollToSection(this.getAttribute('href'));
+            });
+        });
+    </script>
+</body>
+</html>
