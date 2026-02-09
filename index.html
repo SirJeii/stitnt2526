@@ -3,360 +3,457 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STI College Marikina - Tagisan ng Talino 2025-2026</title>
+    <title>STI College Marikina - Tagisan ng Talino 25-26</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Open+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-        
+        :root {
+            --sti-blue: #005596;
+            --sti-yellow: #FFD100;
+            --road-gray: #5e6472;
+            --grass-green: #e2f0d9;
+            --poster-sky: #a4cfe5;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
+            font-family: 'Open Sans', sans-serif;
+            background-color: #dcfce7;
+            background-image: linear-gradient(180deg, #a4cfe5 0%, #e2f0d9 20%, #e2f0d9 100%);
+            background-attachment: fixed;
+            overflow-x: hidden;
         }
 
-        .sti-blue { color: #005596; }
-        .bg-sti-blue { background-color: #005596; }
-        .sti-yellow { color: #fff200; }
-        .bg-sti-yellow { background-color: #fff200; }
+        /* Typography */
+        .font-poster { font-family: 'Montserrat', sans-serif; }
+        .title-stroke { -webkit-text-stroke: 2px black; text-shadow: 6px 6px 0px #000; }
+        .title-stroke-sm { -webkit-text-stroke: 1px black; text-shadow: 3px 3px 0px #000; }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .floating { animation: float 4s ease-in-out infinite; }
+        .floating-delayed { animation: float 4s ease-in-out 2s infinite; }
+
+        /* Scroll Reveal Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px) scale(0.9);
+            transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy transition */
+        }
         
-        .hero-gradient {
-            background: linear-gradient(135deg, #005596 0%, #00335c 100%);
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
         }
 
-        .contest-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
+        /* Comic Card - Enhanced Hover */
+        .comic-card {
+            background: white;
+            border: 3px solid black;
+            box-shadow: 6px 6px 0px rgba(0,0,0,1);
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+            position: relative;
+            transform-style: preserve-3d;
         }
 
-        .contest-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.1);
+        .comic-card:hover {
+            transform: translate(-5px, -5px) rotate(-1deg) scale(1.02);
+            box-shadow: 12px 12px 0px rgba(0,0,0,1);
+            z-index: 10;
         }
 
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
+        .comic-card::after {
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 2px dashed #e2e8f0;
+            pointer-events: none;
         }
 
-        .countdown-item {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        /* Buttons */
+        .btn-retro {
+            background-color: var(--sti-yellow);
+            color: black;
+            font-weight: 800;
+            text-transform: uppercase;
+            border: 2px solid black;
+            box-shadow: 4px 4px 0px black;
+            transition: all 0.1s;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Modal Animation */
-        .modal-enter {
-            animation: modalFadeIn 0.3s ease-out;
+        .btn-retro:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px black;
+            background-color: #ffe066;
         }
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+
+        .btn-retro:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px black;
         }
+
+        /* The Road */
+        .road-container {
+            position: relative;
+            padding: 40px 0;
+        }
+
+        .road-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            background: #5e6472;
+            transform: translateX(-50%);
+            border-left: 4px solid rgba(255,255,255,0.3);
+            border-right: 4px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        /* The Animated Fill inside the road */
+        .road-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0%; /* JS will update this */
+            background: repeating-linear-gradient(
+                45deg,
+                var(--sti-blue),
+                var(--sti-blue) 10px,
+                var(--sti-yellow) 10px,
+                var(--sti-yellow) 20px
+            );
+            transition: height 0.1s linear;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .road-line::after {
+            content: '';
+            position: absolute;
+            left: 50%; top: 0; bottom: 0;
+            width: 4px;
+            background-image: linear-gradient(to bottom, white 50%, transparent 50%);
+            background-size: 10px 40px;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        /* Layout */
+        .roadmap-item { position: relative; width: 100%; margin-bottom: 80px; z-index: 1; }
+        .roadmap-content { width: 45%; position: relative; }
+        
+        .roadmap-item:nth-child(odd) .roadmap-content { margin-left: auto; margin-right: 55%; }
+        .roadmap-item:nth-child(even) .roadmap-content { margin-left: 55%; }
+
+        /* Connector Lines */
+        .roadmap-content::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 15%; /* Longer reach */
+            height: 0;
+            border-top: 4px dashed black;
+            z-index: -1;
+            transition: width 0.5s ease;
+        }
+
+        .roadmap-item:nth-child(odd) .roadmap-content::before {
+            right: -24%; 
+            transform-origin: left;
+            transform: rotate(-10deg);
+        }
+
+        .roadmap-item:nth-child(even) .roadmap-content::before {
+            left: -24%; 
+            transform-origin: right;
+            transform: rotate(10deg);
+        }
+
+        @media (max-width: 768px) {
+            .road-line { left: 20px; width: 20px; }
+            .roadmap-item { margin-bottom: 50px; }
+            .roadmap-content { width: 85%; margin-left: 60px !important; }
+            .roadmap-content::before { display: none; }
+        }
+
+        /* Badge Styles */
+        .badge-academic { background: #60a5fa; color: white; border: 2px solid black; }
+        .badge-culinary { background: #fb923c; color: white; border: 2px solid black; }
+        .badge-tech { background: #818cf8; color: white; border: 2px solid black; }
+
+        /* Trees */
+        .tree { position: fixed; z-index: -1; pointer-events: none; transition: transform 0.2s ease-out; }
+        .tree-svg { filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.2)); }
     </style>
 </head>
-<body class="text-slate-800">
+<body class="text-slate-900 selection:bg-yellow-300 selection:text-black">
+
+    <!-- Parallax Trees -->
+    <div class="tree top-20 left-4 w-24 hidden lg:block" data-speed="0.05"><svg class="tree-svg floating" viewBox="0 0 100 150"><path d="M50 20 L20 80 H40 L10 140 H90 L60 80 H80 Z" fill="#22c55e" stroke="black" stroke-width="3"/></svg></div>
+    <div class="tree top-60 right-10 w-32 hidden lg:block" data-speed="0.08"><svg class="tree-svg floating-delayed" viewBox="0 0 100 150"><path d="M50 20 L20 80 H40 L10 140 H90 L60 80 H80 Z" fill="#15803d" stroke="black" stroke-width="3"/></svg></div>
+    <div class="tree bottom-40 left-10 w-40 hidden lg:block" data-speed="0.1"><svg class="tree-svg floating" viewBox="0 0 100 150"><path d="M50 20 L20 80 H40 L10 140 H90 L60 80 H80 Z" fill="#4ade80" stroke="black" stroke-width="3"/></svg></div>
 
     <!-- DPA Modal -->
-    <div id="dpaModal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-        <div class="absolute inset-0 flex items-center justify-center p-4">
-            <div class="bg-white w-full max-w-xl rounded-3xl shadow-2xl overflow-hidden modal-enter">
-                <div class="bg-sti-blue p-6 text-white flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-2xl">
-                        <i class="fas fa-user-shield text-sti-yellow"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-xl font-black">Data Privacy Notice</h4>
-                        <p class="text-xs text-blue-100 uppercase tracking-widest font-bold">Registration Requirement</p>
-                    </div>
+    <div id="dpaModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onclick="closeModal()"></div>
+        <div class="bg-white w-full max-w-lg rounded-none border-4 border-black shadow-[10px_10px_0px_0px_rgba(0,0,0,1)] relative z-10 transform scale-95 transition-transform duration-300" id="modalContent">
+            <div class="bg-[var(--sti-blue)] p-4 border-b-4 border-black text-white flex justify-between items-center">
+                <h4 class="font-poster font-black text-2xl uppercase tracking-wider text-[var(--sti-yellow)] title-stroke-sm">Privacy Notice</h4>
+                <button onclick="closeModal()" class="text-white hover:text-[var(--sti-yellow)] text-xl hover:rotate-90 transition-transform"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-8 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')]">
+                <div class="text-sm font-bold space-y-4 mb-8">
+                    <p>Before you join the adventure, we need your consent to process your data for the <strong>Tagisan ng Talino 2025-2026</strong>.</p>
+                    <ul class="list-disc pl-5 space-y-2 text-slate-600">
+                        <li>Validation of eligibility.</li>
+                        <li>Competition updates & alerts.</li>
+                        <li>Event documentation.</li>
+                    </ul>
                 </div>
-                <div class="p-8">
-                    <div class="text-sm text-slate-600 space-y-4 max-h-[40vh] overflow-y-auto pr-2 custom-scrollbar">
-                        <p class="font-bold text-slate-900">In compliance with the Data Privacy Act of 2012 (R.A. 10173):</p>
-                        <p>By clicking "I Accept and Proceed", I hereby authorize STI College Marikina to collect, process, and store my personal information provided in the registration form for the purpose of organizing and managing the <strong>Tagisan ng Talino 2025-2026</strong>.</p>
-                        <p>I understand that my information will be used for:</p>
-                        <ul class="list-disc pl-5 space-y-2">
-                            <li>Validating my eligibility for the chosen competition.</li>
-                            <li>Contacting me regarding competition schedules and updates.</li>
-                            <li>Documentation and publication of event highlights.</li>
-                            <li>Internal records of STI College Marikina.</li>
-                        </ul>
-                        <p>I am aware that I have the right to access, correct, or request the deletion of my personal data in accordance with the law.</p>
-                    </div>
-                    <div class="mt-8 flex flex-col sm:flex-row gap-3">
-                        <button onclick="closeModal()" class="flex-1 px-6 py-3 rounded-xl border border-slate-200 font-bold text-slate-500 hover:bg-slate-50 transition">Decline</button>
-                        <button id="confirmRegister" class="flex-1 px-6 py-3 rounded-xl bg-sti-blue text-white font-bold hover:bg-blue-800 shadow-lg shadow-blue-900/20 transition">I Accept and Proceed</button>
-                    </div>
+                <div class="flex gap-4">
+                    <button onclick="closeModal()" class="flex-1 py-3 font-black border-2 border-black bg-gray-200 hover:bg-gray-300 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">NO THANKS</button>
+                    <button id="confirmRegister" class="flex-1 py-3 font-black border-2 border-black bg-[var(--sti-yellow)] hover:bg-yellow-400 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all">LET'S GO!</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Header / Nav -->
-    <nav class="glass-nav border-b sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div>
-                    <h1 class="font-bold text-lg leading-tight">STI College Marikina</h1>
-                    <p class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Tagisan ng Talino 25-26</p>
-                </div>
-                <div class="hidden md:flex space-x-8 text-sm font-semibold">
-                    <a href="#announcements" class="text-slate-600 hover:text-blue-700 transition">Announcements</a>
-                    <a href="#academic" class="text-slate-600 hover:text-blue-700 transition">Academic</a>
-                    <a href="#culinary" class="text-slate-600 hover:text-blue-700 transition">Culinary</a>
-                    <a href="#tech" class="text-slate-600 hover:text-blue-700 transition">Tech</a>
-                </div>
-                <button onclick="scrollToSection('#academic')" class="bg-sti-blue text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-800 transition md:block hidden">
-                    Register Now
-                </button>
+    <!-- Interactive Header Signboard -->
+    <header class="pt-12 pb-6 px-4 text-center perspective-container">
+        <!-- The Blue Road Sign Container -->
+        <div id="heroSign" class="max-w-4xl mx-auto bg-[var(--sti-blue)] border-4 border-white outline outline-4 outline-black rounded-3xl p-6 sm:p-10 shadow-[0px_20px_40px_rgba(0,0,0,0.4)] transform transition-transform duration-100 relative cursor-pointer group">
+            
+            <!-- Shine Effect -->
+            <div class="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent rounded-3xl pointer-events-none"></div>
+
+            <!-- Bolts -->
+            <div class="absolute top-4 left-4 w-4 h-4 bg-gray-300 rounded-full border-2 border-gray-600 shadow-inner"></div>
+            <div class="absolute top-4 right-4 w-4 h-4 bg-gray-300 rounded-full border-2 border-gray-600 shadow-inner"></div>
+            <div class="absolute bottom-4 left-4 w-4 h-4 bg-gray-300 rounded-full border-2 border-gray-600 shadow-inner"></div>
+            <div class="absolute bottom-4 right-4 w-4 h-4 bg-gray-300 rounded-full border-2 border-gray-600 shadow-inner"></div>
+
+            <h4 class="font-poster text-white/90 text-sm sm:text-lg font-bold uppercase tracking-widest mb-1 drop-shadow-sm group-hover:text-white transition-colors">STI College Marikina</h4>
+            <h3 class="font-poster text-white text-xl sm:text-3xl font-black uppercase tracking-widest mb-0 drop-shadow-md">Tagisan ng</h3>
+            <h1 class="font-poster text-[var(--sti-yellow)] text-6xl sm:text-8xl md:text-9xl font-black uppercase leading-none transform skew-x-[-5deg] title-stroke group-hover:scale-105 transition-transform duration-300">TALINO</h1>
+            <div class="inline-block bg-white text-black font-black px-4 py-1 rounded-full text-lg sm:text-2xl mt-4 border-2 border-black shadow-[4px_4px_0px_black] transform rotate-2 group-hover:rotate-0 transition-transform">
+                2025 - 2026
+            </div>
+            
+            <div class="mt-6">
+                <span class="font-poster text-white text-sm sm:text-lg font-bold uppercase tracking-wider border-2 border-white/50 bg-white/10 px-4 py-2 rounded-lg backdrop-blur-sm inline-block hover:bg-white/20 transition-colors">
+                    Registration For Local Level Competition
+                </span>
             </div>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <header class="hero-gradient text-white py-20 px-4 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-64 h-64 bg-sti-yellow opacity-10 rounded-full -mr-20 -mt-20"></div>
-        <div class="max-w-5xl mx-auto text-center relative z-10">
-            <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold mb-8 uppercase tracking-widest">
-                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                Official Registration Portal
+        <!-- Countdown -->
+        <div class="mt-12 flex justify-center gap-4 flex-wrap reveal">
+            <div class="bg-black/80 text-[var(--sti-yellow)] p-4 rounded-xl border-2 border-white w-24 backdrop-blur-md hover:scale-110 transition-transform">
+                <span id="days" class="font-mono text-3xl font-bold block">00</span>
+                <span class="text-[10px] uppercase font-bold text-white">Days</span>
             </div>
-            <h2 class="text-5xl md:text-7xl font-black mb-6 tracking-tight uppercase">Tagisan ng Talino</h2>
-            <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto leading-relaxed">
-                Step up to the challenge. Prove your excellence in academic, hospitality, and technical competitions.
-            </p>
-            
-            <!-- Countdown Timer -->
-            <div class="max-w-3xl mx-auto mt-12 bg-black/20 p-4 sm:p-8 rounded-3xl border border-white/10 backdrop-blur-md">
-                <p class="text-sti-yellow text-xs sm:text-sm font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-4 sm:mb-6">Registration Ends In</p>
-                <div class="grid grid-cols-4 gap-2 sm:gap-4" id="countdown">
-                    <div class="countdown-item p-2 sm:p-4 rounded-xl sm:rounded-2xl">
-                        <span id="days" class="block text-2xl sm:text-3xl md:text-5xl font-black">00</span>
-                        <span class="text-[8px] sm:text-[10px] md:text-xs uppercase font-bold text-blue-200">Days</span>
-                    </div>
-                    <div class="countdown-item p-2 sm:p-4 rounded-xl sm:rounded-2xl">
-                        <span id="hours" class="block text-2xl sm:text-3xl md:text-5xl font-black">00</span>
-                        <span class="text-[8px] sm:text-[10px] md:text-xs uppercase font-bold text-blue-200">Hours</span>
-                    </div>
-                    <div class="countdown-item p-2 sm:p-4 rounded-xl sm:rounded-2xl">
-                        <span id="minutes" class="block text-2xl sm:text-3xl md:text-5xl font-black">00</span>
-                        <span class="text-[8px] sm:text-[10px] md:text-xs uppercase font-bold text-blue-200">Mins</span>
-                    </div>
-                    <div class="countdown-item p-2 sm:p-4 rounded-xl sm:rounded-2xl">
-                        <span id="seconds" class="block text-2xl sm:text-3xl md:text-5xl font-black">00</span>
-                        <span class="text-[8px] sm:text-[10px] md:text-xs uppercase font-bold text-blue-200">Secs</span>
-                    </div>
-                </div>
-                <p class="mt-4 sm:mt-6 text-blue-200 text-[10px] sm:text-xs font-medium">Deadline: February 15, 2026 at 11:59 PM</p>
+            <div class="bg-black/80 text-[var(--sti-yellow)] p-4 rounded-xl border-2 border-white w-24 backdrop-blur-md hover:scale-110 transition-transform">
+                <span id="hours" class="font-mono text-3xl font-bold block">00</span>
+                <span class="text-[10px] uppercase font-bold text-white">Hrs</span>
             </div>
-
-            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-12">
-                <button onclick="scrollToSection('#academic')" class="bg-sti-yellow text-blue-900 px-10 py-4 rounded-xl font-black hover:bg-yellow-400 transition shadow-xl uppercase tracking-wider text-sm">
-                    Register Now
-                </button>
+            <div class="bg-black/80 text-[var(--sti-yellow)] p-4 rounded-xl border-2 border-white w-24 backdrop-blur-md hover:scale-110 transition-transform">
+                <span id="minutes" class="font-mono text-3xl font-bold block">00</span>
+                <span class="text-[10px] uppercase font-bold text-white">Mins</span>
+            </div>
+            <div class="bg-black/80 text-[var(--sti-yellow)] p-4 rounded-xl border-2 border-white w-24 backdrop-blur-md hover:scale-110 transition-transform">
+                <span id="seconds" class="font-mono text-3xl font-bold block">00</span>
+                <span class="text-[10px] uppercase font-bold text-white">Secs</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-16">
-
-        <!-- Announcements Section -->
-        <section id="announcements" class="mb-24">
-            <div class="bg-white border rounded-3xl overflow-hidden shadow-sm flex flex-col md:flex-row">
-                <div class="bg-sti-blue text-white p-8 md:w-1/3 flex flex-col justify-center">
-                    <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-6 text-2xl">
-                        <i class="fas fa-bullhorn text-sti-yellow"></i>
-                    </div>
-                    <h3 class="text-2xl font-black mb-2">Official Bulletin</h3>
-                    <p class="text-blue-100 text-sm">Stay updated with the latest news regarding TNT 2025-2026.</p>
-                </div>
-                <div class="p-8 md:w-2/3">
-                    <div class="space-y-6">
-                        <div class="flex gap-4 pb-6 border-b border-slate-100">
-                            <div class="shrink-0 text-sti-blue mt-1">
-                                <i class="fas fa-check-circle"></i>
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold text-sti-blue uppercase tracking-widest">New Update</span>
-                                <h4 class="font-bold text-lg mb-1">Central Hub for TNT Announcements</h4>
-                                <p class="text-slate-600 text-sm leading-relaxed">We are pleased to inform all students and participants that <strong>this website is now the official portal</strong> for STI College Marikina Tagisan ng Talino 2025-2026. All schedules, results, and major updates will be posted here exclusively.</p>
-                                <span class="text-[10px] text-slate-400 mt-2 block italic">Posted on: January 2026</span>
-                            </div>
-                        </div>
-                        <div class="flex gap-4">
-                            <div class="shrink-0 text-slate-300 mt-1">
-                                <i class="fas fa-info-circle"></i>
-                            </div>
-                            <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Upcoming</span>
-                                <h4 class="font-bold text-lg mb-1">Pre-Competition Orientation</h4>
-                                <p class="text-slate-600 text-sm leading-relaxed">Check back soon for the scheduled virtual orientation for all registered participants.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <!-- Main Map Content -->
+    <main class="max-w-6xl mx-auto px-4 py-12">
         
-        <!-- Academic & Speech -->
-        <section id="academic" class="mb-24">
-            <div class="mb-10">
-                <span class="text-sti-blue font-bold text-sm tracking-[0.2em] uppercase">Category 01</span>
-                <h3 class="text-3xl font-black mt-2">Academic & Speech</h3>
+        <div class="text-center mb-16 reveal">
+            <h2 class="font-poster text-4xl font-black text-[var(--sti-blue)] uppercase tracking-tight title-stroke-sm inline-block bg-white px-6 py-2 border-4 border-black transform rotate-1 shadow-[8px_8px_0px_rgba(0,0,0,0.2)] hover:rotate-2 hover:scale-105 transition-transform cursor-default">
+                Choose Your Adventure
+            </h2>
+        </div>
+
+        <div class="road-container" id="roadContainer">
+            <div class="road-line">
+                <div class="road-progress" id="roadProgress"></div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                <!-- Think Quest -->
-                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
-                    <div>
-                        <div class="w-12 h-12 bg-blue-50 text-sti-blue rounded-xl flex items-center justify-center mb-6 text-2xl">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <h4 class="text-xl font-bold mb-3">Think Quest</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Fast-paced quiz bee testing knowledge in various general academic subjects.</p>
-                    </div>
-                    <button onclick="handleRegistration('https://forms.office.com/r/FCM8i9zYVZ?origin=l')" class="w-full text-center bg-sti-blue text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition">Register Now</button>
-                </div>
 
-                <!-- Stand Up and Deliver -->
-                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
-                    <div>
-                        <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
-                            <i class="fas fa-microphone-alt"></i>
+            <!-- 1. Think Quest -->
+            <div class="roadmap-item group reveal">
+                <div class="roadmap-content">
+                    <div class="comic-card p-6 flex flex-col items-start gap-4">
+                        <div class="absolute -top-6 -right-6 w-16 h-16 bg-teal-500 rounded-full border-4 border-black flex items-center justify-center text-3xl z-20 text-white group-hover:rotate-12 transition-transform shadow-lg">
+                            <i class="fas fa-lightbulb"></i>
                         </div>
-                        <h4 class="text-xl font-bold mb-3">Stand Up and Deliver</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Showcase your public speaking prowess and impromptu delivery skills.</p>
+                        <span class="badge-academic px-3 py-1 text-xs font-black uppercase tracking-widest rounded-full">Academic</span>
+                        <h3 class="font-poster text-3xl font-black text-teal-800">Think Quest</h3>
+                        <p class="text-slate-600 text-sm font-bold">A battle of wits and general knowledge. How fast can you think?</p>
+                        <button onclick="handleRegistration('https://forms.office.com/r/FCM8i9zYVZ?origin=l')" class="btn-retro w-full py-3 mt-2 bg-teal-200 hover:bg-teal-300">Join Quiz</button>
                     </div>
-                    <button onclick="handleRegistration('https://forms.office.com/r/ZP48Et0yx5?origin=lp')" class="w-full text-center bg-sti-blue text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition">Register Now</button>
                 </div>
+            </div>
 
-                <!-- Essay Does It -->
-                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
-                    <div>
-                        <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+            <!-- 2. Stand Up and Deliver -->
+            <div class="roadmap-item group reveal">
+                <div class="roadmap-content">
+                    <div class="comic-card p-6 flex flex-col items-start gap-4">
+                        <div class="absolute -top-6 -left-6 w-16 h-16 bg-purple-500 rounded-full border-4 border-black flex items-center justify-center text-3xl z-20 text-white group-hover:-rotate-12 transition-transform shadow-lg">
+                            <i class="fas fa-microphone-lines"></i>
+                        </div>
+                        <span class="badge-academic px-3 py-1 text-xs font-black uppercase tracking-widest rounded-full">Speech</span>
+                        <h3 class="font-poster text-3xl font-black text-purple-800">Stand Up & Deliver</h3>
+                        <p class="text-slate-600 text-sm font-bold">Speak your mind. Impromptu speaking for the bold and articulate.</p>
+                        <button onclick="handleRegistration('https://forms.office.com/r/ZP48Et0yx5?origin=lp')" class="btn-retro w-full py-3 mt-2 bg-purple-200 hover:bg-purple-300">Speak Up</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Essay Does It -->
+            <div class="roadmap-item group reveal">
+                <div class="roadmap-content">
+                    <div class="comic-card p-6 flex flex-col items-start gap-4">
+                        <div class="absolute -top-6 -right-6 w-16 h-16 bg-blue-500 rounded-full border-4 border-black flex items-center justify-center text-3xl z-20 text-white group-hover:rotate-12 transition-transform shadow-lg">
                             <i class="fas fa-pen-nib"></i>
                         </div>
-                        <h4 class="text-xl font-bold mb-3">Essay Does It</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Craft compelling narratives and express complex ideas through writing.</p>
+                        <span class="badge-academic px-3 py-1 text-xs font-black uppercase tracking-widest rounded-full">Academic</span>
+                        <h3 class="font-poster text-3xl font-black text-[var(--sti-blue)]">Essay Does It</h3>
+                        <p class="text-slate-600 text-sm font-bold">Wield your pen like a sword. Craft compelling narratives under pressure.</p>
+                        <button onclick="handleRegistration('https://forms.office.com/r/FCM8i9zYVZ?origin=l')" class="btn-retro w-full py-3 mt-2 bg-blue-200 hover:bg-blue-300">Write Now</button>
                     </div>
-                    <button onclick="handleRegistration('https://forms.office.com/r/FCM8i9zYVZ?origin=l')" class="w-full text-center bg-sti-blue text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition">Register Now</button>
                 </div>
+            </div>
 
-                <!-- Travelogue -->
-                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
-                    <div>
-                        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
-                            <i class="fas fa-globe-asia"></i>
+            <!-- 4. Travelogue -->
+            <div class="roadmap-item group reveal">
+                <div class="roadmap-content">
+                    <div class="comic-card p-6 flex flex-col items-start gap-4 bg-emerald-50">
+                        <div class="absolute -top-6 -left-6 w-16 h-16 bg-emerald-500 rounded-full border-4 border-black flex items-center justify-center text-3xl z-20 text-white group-hover:-rotate-12 transition-transform shadow-lg">
+                            <i class="fas fa-map-location-dot"></i>
                         </div>
-                        <h4 class="text-xl font-bold mb-3">Travelogue</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Highlight destinations and tourism spots with creative presentation skills.</p>
+                        <span class="badge-academic px-3 py-1 text-xs font-black uppercase tracking-widest rounded-full">Tourism</span>
+                        <h3 class="font-poster text-3xl font-black text-emerald-800">Travelogue</h3>
+                        <p class="text-slate-600 text-sm font-bold">Showcase destinations and guide the way for future travelers.</p>
+                        <button onclick="handleRegistration('https://forms.office.com/r/8xSnJckgYp')" class="btn-retro w-full py-3 mt-2 bg-emerald-300 hover:bg-emerald-400">Explore</button>
                     </div>
-                     <button onclick="handleRegistration('https://forms.office.com/r/8xSnJckgYp')" class="w-full text-center bg-sti-blue text-white py-3 rounded-xl font-bold hover:bg-blue-800 transition">Register Now</button>
                 </div>
             </div>
-        </section>
 
-        <!-- Culinary Arts -->
-        <section id="culinary" class="mb-24">
-            <div class="mb-10">
-                <span class="text-amber-500 font-bold text-sm tracking-[0.2em] uppercase">Category 02</span>
-                <h3 class="text-3xl font-black mt-2">Plates and Palates (Culinary)</h3>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Worth The Whisk -->
-                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
-                    <div>
-                        <div class="w-12 h-12 bg-pink-50 text-pink-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+            <!-- 5. Worth The Whisk -->
+            <div class="roadmap-item group reveal">
+                <div class="roadmap-content">
+                    <div class="comic-card p-6 flex flex-col items-start gap-4 bg-pink-50">
+                        <div class="absolute -top-6 -right-6 w-16 h-16 bg-pink-500 rounded-full border-4 border-black flex items-center justify-center text-3xl z-20 text-white group-hover:rotate-12 transition-transform shadow-lg">
                             <i class="fas fa-birthday-cake"></i>
                         </div>
-                        <h4 class="text-xl font-bold mb-3">Worth The Whisk</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Cake decorating competition where precision and creativity meet.</p>
+                        <span class="badge-culinary px-3 py-1 text-xs font-black uppercase tracking-widest rounded-full">Culinary</span>
+                        <h3 class="font-poster text-3xl font-black text-pink-700">Worth The Whisk</h3>
+                        <p class="text-slate-600 text-sm font-bold">Artistry in icing. Decorate your way to the top.</p>
+                        <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="btn-retro w-full py-3 mt-2 bg-pink-300 hover:bg-pink-400">Decorate</button>
                     </div>
-                    <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="w-full text-center bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">Register Now</button>
                 </div>
+            </div>
 
-                <!-- Chef Express -->
-                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
-                    <div>
-                        <div class="w-12 h-12 bg-red-50 text-red-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
-                            <i class="fas fa-hat-chef"></i>
+            <!-- 6. Chef Express -->
+            <div class="roadmap-item group reveal">
+                <div class="roadmap-content">
+                    <div class="comic-card p-6 flex flex-col items-start gap-4 bg-orange-50">
+                        <div class="absolute -top-6 -left-6 w-16 h-16 bg-orange-500 rounded-full border-4 border-black flex items-center justify-center text-3xl z-20 text-white group-hover:-rotate-12 transition-transform shadow-lg">
+                            <i class="fas fa-fire"></i>
                         </div>
-                        <h4 class="text-xl font-bold mb-3">Chef Express</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Culinary competition focusing on taste, speed, and presentation.</p>
+                        <span class="badge-culinary px-3 py-1 text-xs font-black uppercase tracking-widest rounded-full">Culinary</span>
+                        <h3 class="font-poster text-3xl font-black text-orange-700">Chef Express</h3>
+                        <p class="text-slate-600 text-sm font-bold">Taste. Speed. Presentation. Can you handle the heat?</p>
+                        <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="btn-retro w-full py-3 mt-2 bg-orange-300 hover:bg-orange-400">Cook Now</button>
                     </div>
-                    <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="w-full text-center bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">Register Now</button>
                 </div>
+            </div>
 
-                <!-- Mix and Flair -->
-                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
-                    <div>
-                        <div class="w-12 h-12 bg-yellow-50 text-yellow-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+            <!-- 7. Mix and Flair -->
+            <div class="roadmap-item group reveal">
+                <div class="roadmap-content">
+                    <div class="comic-card p-6 flex flex-col items-start gap-4 bg-yellow-50">
+                        <div class="absolute -top-6 -right-6 w-16 h-16 bg-yellow-500 rounded-full border-4 border-black flex items-center justify-center text-3xl z-20 text-white group-hover:rotate-12 transition-transform shadow-lg">
                             <i class="fas fa-cocktail"></i>
                         </div>
-                        <h4 class="text-xl font-bold mb-3">Mix and Flair</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Bartending and flairtending skills for future hospitality stars.</p>
+                        <span class="badge-culinary px-3 py-1 text-xs font-black uppercase tracking-widest rounded-full">Culinary</span>
+                        <h3 class="font-poster text-3xl font-black text-yellow-700">Mix and Flair</h3>
+                        <p class="text-slate-600 text-sm font-bold">Bottle flipping and drink mixing spectacle.</p>
+                        <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="btn-retro w-full py-3 mt-2 bg-yellow-300 hover:bg-yellow-400">Shake It</button>
                     </div>
-                    <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="w-full text-center bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">Register Now</button>
                 </div>
+            </div>
 
-                <!-- All in Place -->
-                <div class="contest-card bg-white p-6 rounded-2xl border shadow-sm">
-                    <div>
-                        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-6 text-2xl">
+            <!-- 8. All in Place -->
+            <div class="roadmap-item group reveal">
+                <div class="roadmap-content">
+                    <div class="comic-card p-6 flex flex-col items-start gap-4 bg-sky-50">
+                        <div class="absolute -top-6 -left-6 w-16 h-16 bg-sky-500 rounded-full border-4 border-black flex items-center justify-center text-3xl z-20 text-white group-hover:-rotate-12 transition-transform shadow-lg">
                             <i class="fas fa-concierge-bell"></i>
                         </div>
-                        <h4 class="text-xl font-bold mb-3">All in Place</h4>
-                        <p class="text-slate-500 text-sm leading-relaxed mb-8">Mise-en-place and table setting competition for service excellence.</p>
-                    </div>
-                    <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="w-full text-center bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-black transition">Register Now</button>
-                </div>
-            </div>
-            
-            <div class="mt-8 bg-amber-50 border border-amber-100 p-4 rounded-xl text-amber-800 text-sm flex items-center gap-3">
-                <i class="fas fa-info-circle text-lg"></i>
-                <p>Note: All culinary contests use the unified <strong>Culinary Society Tagisan ng Talino Pre-Registration Form</strong>.</p>
-            </div>
-        </section>
-
-        <!-- Tech Section -->
-        <section id="tech">
-            <div class="mb-10">
-                <span class="text-indigo-600 font-bold text-sm tracking-[0.2em] uppercase">Category 03</span>
-                <h3 class="text-3xl font-black mt-2">Information Technology</h3>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-1 gap-6">
-                <div class="contest-card bg-slate-900 text-white p-10 rounded-3xl overflow-hidden relative group">
-                    <div class="absolute top-0 right-0 p-8 opacity-10 text-9xl group-hover:scale-110 transition duration-500">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="relative z-10 md:w-2/3">
-                        <div class="inline-block bg-indigo-600 text-[10px] font-black px-3 py-1 rounded-full mb-4 uppercase tracking-widest">Featured Tech Contest</div>
-                        <h4 class="text-3xl font-black mb-4">CodeFest 2025</h4>
-                        <p class="text-slate-400 text-lg mb-8 leading-relaxed">The premier programming competition for future software engineers. Challenge your logic, speed, and coding efficiency in real-time problem-solving scenarios.</p>
-                        <button onclick="handleRegistration('https://forms.office.com/r/Jd6bLw62NG')" class="inline-flex items-center bg-sti-yellow text-blue-900 px-8 py-3 rounded-xl font-black hover:bg-yellow-400 transition shadow-lg uppercase tracking-wider text-sm">
-                            Register for CodeFest <i class="fas fa-chevron-right ml-2"></i>
-                        </button>
+                        <span class="badge-culinary px-3 py-1 text-xs font-black uppercase tracking-widest rounded-full">Culinary</span>
+                        <h3 class="font-poster text-3xl font-black text-sky-800">All in Place</h3>
+                        <p class="text-slate-600 text-sm font-bold">Table setting precision and mise-en-place excellence.</p>
+                        <button onclick="handleRegistration('https://forms.office.com/r/wRFuSiPwt5')" class="btn-retro w-full py-3 mt-2 bg-sky-300 hover:bg-sky-400">Set Table</button>
                     </div>
                 </div>
             </div>
-        </section>
 
+            <!-- 9. Code Fest -->
+            <div class="roadmap-item group reveal">
+                <div class="roadmap-content">
+                    <div class="comic-card p-6 flex flex-col items-start gap-4 bg-slate-900 text-white">
+                        <div class="absolute -top-6 -right-6 w-16 h-16 bg-[var(--sti-yellow)] rounded-full border-4 border-black flex items-center justify-center text-3xl z-20 group-hover:rotate-12 transition-transform shadow-lg">
+                            <i class="fas fa-laptop-code text-black"></i>
+                        </div>
+                        <span class="badge-tech px-3 py-1 text-xs font-black uppercase tracking-widest rounded-full">Tech Category</span>
+                        <h3 class="font-poster text-3xl font-black text-white">Code Fest</h3>
+                        <p class="text-gray-300 text-sm font-semibold">The ultimate programming battle. Solve algorithms and debug in real-time.</p>
+                        <button onclick="handleRegistration('https://forms.office.com/r/Jd6bLw62NG')" class="btn-retro w-full py-3 mt-2">Start Coding</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Destination Sign -->
+            <div class="text-center relative z-10 mt-12 reveal">
+                <div class="inline-block bg-[#15803d] text-white p-2 border-4 border-black transform rotate-2 hover:rotate-0 hover:scale-110 transition-transform">
+                    <div class="border-2 border-white border-dashed p-4">
+                        <h3 class="font-poster text-xl uppercase">Destination</h3>
+                        <h2 class="font-poster text-4xl font-black text-[var(--sti-yellow)] title-stroke-sm">NATIONAL FINALS</h2>
+                        <p class="font-bold mt-2"><i class="fas fa-map-marker-alt mr-2"></i>Baguio City • May 14, 2026</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-950 text-white py-16">
-        <div class="max-w-7xl mx-auto px-4 text-center md:text-left">
-            <div class="mb-12 flex justify-center">
-                <h5 class="font-black text-4xl text-white">Be More. Be STI.</h5>
-            </div>
-            <div class="border-t border-slate-900 pt-8 flex justify-center items-center text-xs text-slate-500">
-                <p>&copy; 2025-2026 STI College Marikina. All rights reserved.</p>
-            </div>
+    <footer class="bg-[var(--sti-blue)] border-t-4 border-black py-16 relative z-20 text-center overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4">
+             <h2 class="font-poster font-black text-5xl md:text-7xl lg:text-9xl text-white uppercase tracking-tighter title-stroke hover:scale-105 transition-transform duration-500">
+                BE MORE.<br>BE STI.
+             </h2>
+             <p class="mt-8 text-white/80 font-bold text-sm uppercase tracking-widest">&copy; 2025-2026 STI College Marikina</p>
         </div>
     </footer>
 
@@ -364,45 +461,110 @@
         // --- GLOBAL STATE ---
         let pendingRegistrationUrl = '';
 
+        // --- 3D TILT EFFECT FOR HERO ---
+        const heroSign = document.getElementById('heroSign');
+        const container = document.querySelector('.perspective-container');
+
+        if(heroSign && container) {
+            container.addEventListener('mousemove', (e) => {
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+                heroSign.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            });
+
+            container.addEventListener('mouseenter', (e) => {
+                heroSign.style.transition = 'none';
+            });
+
+            container.addEventListener('mouseleave', (e) => {
+                heroSign.style.transition = 'all 0.5s ease';
+                heroSign.style.transform = `rotateY(0deg) rotateX(0deg)`;
+            });
+        }
+
+        // --- SCROLL REVEAL & PARALLAX ---
+        const roadProgress = document.getElementById('roadProgress');
+        const roadContainer = document.getElementById('roadContainer');
+        const trees = document.querySelectorAll('.tree');
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+
+            // Reveal Elements
+            document.querySelectorAll('.reveal').forEach(el => {
+                const elementTop = el.getBoundingClientRect().top;
+                const elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    el.classList.add('active');
+                }
+            });
+
+            // Road Progress Logic
+            if(roadContainer && roadProgress) {
+                const roadTop = roadContainer.offsetTop;
+                const roadHeight = roadContainer.offsetHeight;
+                const scrollPos = scrollY + windowHeight / 2;
+                
+                let progress = (scrollPos - roadTop) / roadHeight * 100;
+                progress = Math.max(0, Math.min(100, progress)); // Clamp between 0 and 100
+                roadProgress.style.height = `${progress}%`;
+            }
+
+            // Parallax Trees
+            trees.forEach(tree => {
+                const speed = tree.getAttribute('data-speed');
+                tree.style.transform = `translateY(${scrollY * speed}px)`;
+            });
+        });
+
+        // Trigger once on load
+        window.dispatchEvent(new Event('scroll'));
+
+
         // --- DPA MODAL LOGIC ---
         const modal = document.getElementById('dpaModal');
+        const modalContent = document.getElementById('modalContent');
         const confirmBtn = document.getElementById('confirmRegister');
 
         function handleRegistration(url) {
             pendingRegistrationUrl = url;
             modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // Prevent background scroll
+            document.body.style.overflow = 'hidden'; 
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
         }
 
         function closeModal() {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }, 200);
             pendingRegistrationUrl = '';
         }
 
         confirmBtn.onclick = function() {
-            if(pendingRegistrationUrl) {
-                window.open(pendingRegistrationUrl, '_blank');
-                closeModal();
-            }
-        };
-
-        // --- SCROLL HELPERS ---
-        function scrollToSection(id) {
-            const element = document.querySelector(id);
-            if(element) {
-                const offset = 80;
-                const bodyRect = document.body.getBoundingClientRect().top;
-                const elementRect = element.getBoundingClientRect().top;
-                const elementPosition = elementRect - bodyRect;
-                const offsetPosition = elementPosition - offset;
-
-                window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
+            // FIRE CONFETTI
+            if(window.confetti) {
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#005596', '#FFD100', '#ffffff']
                 });
             }
-        }
+
+            if(pendingRegistrationUrl) {
+                setTimeout(() => {
+                    window.open(pendingRegistrationUrl, '_blank');
+                    closeModal();
+                }, 800);
+            }
+        };
 
         // --- COUNTDOWN LOGIC ---
         const targetDate = new Date("February 15, 2026 23:59:59").getTime();
@@ -412,7 +574,10 @@
             const distance = targetDate - now;
 
             if (distance < 0) {
-                document.getElementById("countdown").innerHTML = "<div class='text-sti-yellow text-xl font-bold uppercase'>Registration Closed</div>";
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
                 return;
             }
 
@@ -429,14 +594,6 @@
 
         setInterval(updateCountdown, 1000);
         updateCountdown();
-
-        // --- SMOOTH SCROLL FOR NAV ---
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                scrollToSection(this.getAttribute('href'));
-            });
-        });
     </script>
 </body>
 </html>
